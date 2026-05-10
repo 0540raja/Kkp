@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KKP Karyakarta Registration & ID Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            line-height: 1.6;
+        }
+
+        :root {
+            --saffron: #FF9933;
+            --saffron-dark: #e67300;
+            --green: #138808;
+            --green-dark: #0d6b06;
+            --dark: #1a1a2e;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --red: #dc3545;
+            --red-dark: #c82333;
+            --gold: #ffd700;
+        }
+
+        /* ===== NAV ===== */
+        .header-bar {
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            padding: 15px 0;
+            border-bottom: 4px solid var(--saffron);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-bar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-logo .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--saffron), var(--green));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 18px; color: white;
+        }
+        .header-logo span {
+            color: white; font-weight: 800; font-size: 20px;
+        }
+        .header-logo span.highlight { color: var(--saffron); }
+        .header-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .btn-sm {
+            padding: 8px 20px; border-radius: 25px; font-weight: 600;
+            font-size: 13px; border: none; cursor: pointer; transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-saffron { background: var(--saffron); color: var(--dark); }
+        .btn-saffron:hover { background: var(--green); color: white; }
+        .btn-ghost { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.3); }
+        .btn-ghost:hover { border-color: var(--saffron); }
+
+        /* ===== MAIN WRAPPER ===== */
+        .main-wrap {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        @media (max-width: 900px) {
+            .main-wrap { grid-template-columns: 1fr; }
+        }
+
+        /* ===== FORM SECTION ===== */
+        .form-section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .form-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        .form-section h2 span { color: var(--saffron); }
+        .form-section .sub {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        .form-group label .req { color: red; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            font-size: 14px;
+            font-family: inherit;
+            transition: 0.3s;
+            background: #fafafa;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--saffron);
+            background: white;
+        }
+        .form-group textarea { height: 70px; resize: vertical; }
+        .photo-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .photo-preview {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px dashed #ccc;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            background: #f5f5f5;
+            font-size: 30px;
+            color: #aaa;
+        }
+        .photo-preview img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .photo-upload input[type="file"] { flex: 1; padding: 10px 0; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--saffron), var(--saffron-dark));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,153,51,0.3);
+        }
+
+        /* ===== CARD PREVIEW ===== */
+        .card-section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .card-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        .card-section h2 span { color: var(--green); }
+        .card-section .sub {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .empty-card {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+        }
+        .empty-card .big-icon { font-size: 60px; margin-bottom: 15px; }
+        .empty-card h3 { color: #888; font-weight: 600; }
+
+        /* ===== ID CARD DESIGN ===== */
+        #idCardContainer {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+        .id-card {
+            width: 350px;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+            border: 2px solid #e0e0e0;
+            position: relative;
+        }
+        .id-card-header {
+            background: linear-gradient(135deg, var(--saffron), var(--saffron-dark));
+            padding: 18px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .id-card-header .party-name {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+        .id-card-header .party-sub {
+            font-size: 10px;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+        .id-card-header .tricolor-bar {
+            display: flex;
+            height: 4px;
+            margin-top: 8px;
+        }
+        .id-card-header .tricolor-bar span {
+            flex: 1;
+        }
+        .id-card-header .tricolor-bar span:nth-child(1) { background: #FF9933; }
+        .id-card-header .tricolor-bar span:nth-child(2) { background: white; }
+        .id-card-header .tricolor-bar span:nth-child(3) { background: #138808; }
+        .id-card-body {
+            padding: 18px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #fafafa;
+        }
+        .id-card-photo {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: 3px solid var(--saffron);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            color: #ccc;
+        }
+        .id-card-photo img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .id-card-details { flex: 1; }
+        .id-card-details .card-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+        .id-card-details .card-role {
+            font-size: 12px;
+            color: var(--saffron);
+            font-weight: 600;
+        }
+        .id-card-details .card-id {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 3px;
+            font-weight: 600;
+            background: #e8e8e8;
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .id-card-footer {
+            padding: 14px 20px;
+            background: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .id-card-footer .footer-text {
+            color: rgba(255,255,255,0.7);
+            font-size: 9px;
+            line-height: 1.4;
+        }
+        .id-card-footer .footer-text strong {
+            color: var(--saffron);
+            font-size: 11px;
+        }
+        .id-card-footer .qr-box {
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+        .id-card-footer .qr-box canvas, 
+        .id-card-footer .qr-box img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-download {
+            padding: 12px 28px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-download:hover { background: var(--green-dark); transform: translateY(-2px); }
+        .btn-print {
+            padding: 12px 28px;
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-print:hover { background: #2a2a4a; transform: translateY(-2px); }
+
+        /* ===== REGISTERED LIST ===== */
+        .list-section {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+        }
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .list-header h2 {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        .list-header h2 span { color: var(--saffron); }
+        .list-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .member-card {
+            background: white;
+            border-radius: 14px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        .member-card:hover {
+            border-color: var(--saffron);
+            transform: translateY(-3px);
+        }
+        .member-card .m-photo {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            overflow: hidden;
+            border: 2px solid var(--saffron);
+        }
+        .member-card .m-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .member-card .m-name { font-weight: 700; font-size: 14px; }
+        .member-card .m-id { font-size: 11px; color: var(--gray); }
+        .member-card .m-role { font-size: 11px; color: var(--saffron); font-weight: 600; }
+        .member-card .m-city { font-size: 11px; color: var(--gray); }
+        .member-card .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .member-card:hover .delete-btn {
+            opacity: 1;
+        }
+        .delete-btn:hover {
+            background: var(--red-dark);
+            transform: scale(1.15);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--green);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.5s;
+            z-index: 999;
+            max-width: 400px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-box .modal-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        .modal-box h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        .modal-box p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-actions .btn-cancel {
+            padding: 12px 30px;
+            background: #e8e8e8;
+            color: var(--dark);
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-actions .btn-cancel:hover { background: #ddd; }
+        .modal-actions .btn-confirm {
+            padding: 12px 30px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .modal-actions .btn-confirm:hover { background: var(--red-dark); }
+
+        /* ===== PASSWORD MODAL ===== */
+        .password-input-group {
+            position: relative;
+            margin: 20px 0;
+        }
+        .password-input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            font-size: 18px;
+            font-family: inherit;
+            text-align: center;
+            letter-spacing: 4px;
+            transition: 0.3s;
+            background: #fafafa;
+        }
+        .password-input-group input:focus {
+            outline: none;
+            border-color: var(--saffron);
+            background: white;
+        }
+        .password-input-group .lock-icon {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+        .password-error {
+            color: var(--red);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: none;
+        }
+        .password-hint {
+            color: var(--gray);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .btn-danger-sm {
+            padding: 8px 18px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-danger-sm:hover { background: var(--red-dark); }
+        .btn-danger-outline {
+            padding: 8px 18px;
+            background: transparent;
+            color: var(--red);
+            border: 2px solid var(--red);
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-danger-outline:hover { background: var(--red); color: white; }
+        
+        /* Lock badge in header */
+        .lock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header-bar">
+    <div class="container">
+        <div class="header-logo">
+            <div class="logo-icon">KKP</div>
+            <span>KAAM KI <span class="highlight">PARTY</span><span class="lock-badge">🔒 Admin</span></span>
+        </div>
+        <div class="header-actions">
+            <a href="https://kaamkiparty.in" class="btn-sm btn-ghost" target="_blank">🌐 Main Site</a>
+            <button class="btn-sm btn-saffron" onclick="document.getElementById('registrationForm').scrollIntoView({behavior:'smooth'})">📝 Register</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap">
+    <!-- FORM -->
+    <div class="form-section" id="registrationForm">
+        <h2>📝 KKP <span>Karyakarta</span> Registration</h2>
+        <p class="sub">Apni jaankari bharein aur apna membership card turant prapt karein</p>
+        <form id="regForm" onsubmit="handleRegistration(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Poorna Naam <span class="req">*</span></label>
+                    <input type="text" id="fullName" placeholder="Jaise: Rahul Kumar" required />
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number <span class="req">*</span></label>
+                    <input type="tel" id="phone" placeholder="9876543210" required />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Shahar / Gaon <span class="req">*</span></label>
+                    <input type="text" id="city" placeholder="Delhi, Lucknow, etc." required />
+                </div>
+                <div class="form-group">
+                    <label>Rajya <span class="req">*</span></label>
+                    <input type="text" id="state" placeholder="Uttar Pradesh" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Poorna Pata</label>
+                <textarea id="address" placeholder="Mohalla, shahar, pin code"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Karyakarta ka prakar <span class="req">*</span></label>
+                    <select id="role" required>
+                        <option value="">— Chunein —</option>
+                        <option value="Yuva Karyakarta">Yuva Karyakarta</option>
+                        <option value="District Prabhari">District Prabhari</option>
+                        <option value="Block Prabhari">Block Prabhari</option>
+                        <option value="Booth Prabhari">Booth Prabhari</option>
+                        <option value="Volunteer">Volunteer</option>
+                        <option value="Sadasya">Sadasya</option>
+                        <option value="Prabhari">Prabhari</option>
+                        <option value="Anya">Anya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>E-mail (yadi hai)</label>
+                    <input type="email" id="email" placeholder="aapka@email.com" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Apna Photo Upload karein <span class="req">*</span></label>
+                <div class="photo-upload">
+                    <div class="photo-preview" id="photoPreview">📷</div>
+                    <input type="file" id="photoInput" accept="image/*" required onchange="previewPhoto(event)" />
+                </div>
+            </div>
+            <button type="submit" class="btn-submit">✅ Karyakarta Card Banayein</button>
+        </form>
+    </div>
+
+    <!-- CARD -->
+    <div class="card-section" id="cardSection">
+        <h2>🪪 Aapka <span>KKP ID Card</span></h2>
+        <p class="sub">Registration ke baad yahan aapka digital card dikhega</p>
+        <div id="idCardContainer">
+            <div class="empty-card" id="emptyCard">
+                <div class="big-icon">🪪</div>
+                <h3>Abhi tak koi card generate nahi hua</h3>
+                <p style="font-size:13px; color:#bbb;">Pehle form bharein, phir yahan card dikhega!</p>
+            </div>
+            <div id="generatedCard" style="display:none;">
+                <div class="id-card" id="idCardElement">
+                    <div class="id-card-header">
+                        <div class="party-name">🇮🇳 KAAM KI PARTY</div>
+                        <div class="party-sub">KKP • YUVA SHAKTI • ROZGAAR • SHIKSHA</div>
+                        <div class="tricolor-bar">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="id-card-body">
+                        <div class="id-card-photo" id="cardPhoto">
+                            <img id="cardPhotoImg" src="" alt="Photo" />
+                        </div>
+                        <div class="id-card-details">
+                            <div class="card-name" id="cardName">—</div>
+                            <div class="card-role" id="cardRole">—</div>
+                            <div class="card-id" id="cardID">KKP-0000-000000</div>
+                            <div style="font-size:10px; color:#999; margin-top:4px;">
+                                <span id="cardCity">—</span> • <span id="cardState">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="id-card-footer">
+                        <div class="footer-text">
+                            <strong>KKP Karyakarta</strong><br />
+                            Valid: 2026-2031<br />
+                            Jai Hind! 🇮🇳
+                        </div>
+                        <div class="qr-box" id="qrCodeBox"></div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-download" onclick="downloadCard()">⬇️ Card Download Karein</button>
+                    <button class="btn-print" onclick="printCard()">🖨️ Print Karein</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== REGISTERED MEMBERS LIST ===== -->
+<div class="list-section">
+    <div class="list-header">
+        <h2>📋 KKP ke <span>Karyakarta</span> (Total: <span id="memberCount">0</span>)</h2>
+        <div class="list-actions">
+            <button class="btn-danger-outline" onclick="showPasswordModal('ALL')">🗑️ Sabhi Card Delete Karein</button>
+        </div>
+    </div>
+    <div class="member-grid" id="memberGrid">
+        <p style="color:#aaa;">Abhi tak koi karyakarta register nahi hua. Aap pehle banein! 🎯</p>
+    </div>
+</div>
+
+<!-- ===== PASSWORD MODAL (Pehle password poochta hai) ===== -->
+<div class="modal-overlay" id="passwordModal">
+    <div class="modal-box">
+        <div class="modal-icon">🔒</div>
+        <h3>Admin Password Daalein</h3>
+        <p>Card delete karne ke liye admin password zaroori hai</p>
+        <div class="password-input-group">
+            <div class="lock-icon">🔑</div>
+            <input type="password" id="adminPassword" placeholder="Password" maxlength="20" autocomplete="off" />
+            <div class="password-error" id="passwordError">❌ Galat password! Phir se try karein.</div>
+            <div class="password-hint">💡 Hint: Ansh & Raja ka naam</div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closePasswordModal()">Cancel</button>
+            <button class="btn-confirm" id="verifyPasswordBtn" style="background:var(--saffron);">✅ Password Verify Karein</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL (Password ke baad yeh aata hai) ===== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <div class="modal-icon" id="deleteModalIcon">⚠️</div>
+        <h3 id="deleteModalTitle">Kya aap card delete karna chahte hain?</h3>
+        <p id="deleteModalMessage">Yeh action undo nahi ho sakta. Card hamesha ke liye delete ho jayega.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-confirm" id="confirmDeleteBtn">Haan, Delete Karein</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">✅ Karyakarta card delete ho gaya!</div>
+
+<script>
+    // ===== CONFIG =====
+    const ADMIN_PASSWORD = 'Ansh&Raja';
+    
+    // ===== STORAGE =====
+    function getMembers() {
+        try { return JSON.parse(localStorage.getItem('kkp_members')) || []; }
+        catch(e) { return []; }
+    }
+    function saveMembers(members) {
+        localStorage.setItem('kkp_members', JSON.stringify(members));
+    }
+
+    // ===== GENERATE UNIQUE ID =====
+    function generateKKPID() {
+        const prefix = 'KKP';
+        const year = '26';
+        const rand = Math.floor(10000 + Math.random() * 90000);
+        const seq = Date.now().toString().slice(-6);
+        return `${prefix}-${year}${seq}-${rand}`;
+    }
+
+    // ===== PHOTO PREVIEW =====
+    let uploadedPhotoData = null;
+
+    function previewPhoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadedPhotoData = e.target.result;
+            document.getElementById('photoPreview').innerHTML = `<img src="${e.target.result}" />`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ===== HANDLE REGISTRATION =====
+    function handleRegistration(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('fullName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const state = document.getElementById('state').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const role = document.getElementById('role').value;
+        const email = document.getElementById('email').value.trim();
+
+        if (!name || !phone || !city || !state || !role) {
+            showToast('❌ Kripya saari required fields bharein!', '#dc3545');
+            return;
+        }
+        if (!uploadedPhotoData) {
+            showToast('❌ Kripya apna photo upload karein!', '#dc3545');
+            return;
+        }
+
+        const memberId = generateKKPID();
+
+        const member = {
+            id: memberId,
+            name, phone, city, state, address, role, email,
+            photo: uploadedPhotoData,
+            registeredAt: new Date().toLocaleString('hi-IN')
+        };
+
+        const members = getMembers();
+        members.unshift(member);
+        saveMembers(members);
+
+        showCard(member);
+        updateMemberList();
+
+        showToast(`✅ ${name} ji! Aapka KKP karyakarta card taiyar hai! ID: ${memberId}`);
+        
+        document.getElementById('regForm').reset();
+        document.getElementById('photoPreview').innerHTML = '📷';
+        uploadedPhotoData = null;
+    }
+
+    // ===== SHOW CARD =====
+    function showCard(member) {
+        document.getElementById('emptyCard').style.display = 'none';
+        document.getElementById('generatedCard').style.display = 'block';
+
+        document.getElementById('cardName').textContent = member.name;
+        document.getElementById('cardRole').textContent = member.role;
+        document.getElementById('cardID').textContent = member.id;
+        document.getElementById('cardCity').textContent = member.city;
+        document.getElementById('cardState').textContent = member.state;
+
+        const cardPhotoImg = document.getElementById('cardPhotoImg');
+        cardPhotoImg.src = member.photo;
+        cardPhotoImg.style.display = 'block';
+
+        // QR Code
+        const qrBox = document.getElementById('qrCodeBox');
+        qrBox.innerHTML = '';
+        const qrData = `KKP Member\nID: ${member.id}\nName: ${member.name}\nRole: ${member.role}\nCity: ${member.city}`;
+        try {
+            new QRCode(qrBox, {
+                text: qrData,
+                width: 55,
+                height: 55,
+                colorDark: "#1a1a2e",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } catch(e) {
+            qrBox.innerHTML = '<span style="font-size:18px;">✅</span>';
+        }
+
+        document.getElementById('cardSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ===== DOWNLOAD CARD =====
+    function downloadCard() {
+        const card = document.getElementById('idCardElement');
+        html2canvas(card, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            allowTaint: true
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `KKP-ID-${document.getElementById('cardID').textContent}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('⬇️ Card download ho gaya!');
+        }).catch(err => {
+            showToast('❌ Download mein error: ' + err.message, '#dc3545');
+        });
+    }
+
+    // ===== PRINT CARD =====
+    function printCard() {
+        const card = document.getElementById('idCardElement');
+        html2canvas(card, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true
+        }).then(canvas => {
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html><head><title>KKP ID Card</title>
+                <style>
+                    body { display:flex; justify-content:center; align-items:center; height:100vh; margin:0; background:white; }
+                    img { max-width:100%; max-height:100vh; }
+                </style>
+                </head><body>
+                <img src="${canvas.toDataURL('image/png')}" onload="window.print(); window.close();" />
+                </body></html>
+            `);
+            win.document.close();
+        });
+    }
+
+    // ===== PASSWORD MODAL =====
+    let pendingDeleteAction = null; // 'ALL' ya memberId
+
+    function showPasswordModal(target) {
+        pendingDeleteAction = target;
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('passwordError').style.display = 'none';
+        document.getElementById('passwordModal').classList.add('active');
+        setTimeout(() => document.getElementById('adminPassword').focus(), 300);
+    }
+
+    function closePasswordModal() {
+        document.getElementById('passwordModal').classList.remove('active');
+        pendingDeleteAction = null;
+    }
+
+    // Password verify on button click
+    document.getElementById('verifyPasswordBtn').addEventListener('click', function() {
+        verifyPassword();
+    });
+
+    // Password verify on Enter key
+    document.getElementById('adminPassword').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            verifyPassword();
+        }
+    });
+
+    function verifyPassword() {
+        const entered = document.getElementById('adminPassword').value;
+        if (entered === ADMIN_PASSWORD) {
+            document.getElementById('passwordError').style.display = 'none';
+            closePasswordModal();
+            
+            // Ab delete modal dikhao
+            if (pendingDeleteAction === 'ALL') {
+                const members = getMembers();
+                if (members.length === 0) {
+                    showToast('❌ Koi karyakarta register nahi hai!', '#dc3545');
+                    pendingDeleteAction = null;
+                    return;
+                }
+                document.getElementById('deleteModalIcon').textContent = '⚠️';
+                document.getElementById('deleteModalTitle').textContent = 'Saare cards delete karein?';
+                document.getElementById('deleteModalMessage').textContent = 
+                    `Saare ${members.length} karyakartaon ke cards delete ho jayenge. Yeh action undo nahi ho sakta!`;
+                document.getElementById('confirmDeleteBtn').onclick = function() {
+                    const count = getMembers().length;
+                    localStorage.removeItem('kkp_members');
+                    closeDeleteModal();
+                    updateMemberList();
+                    document.getElementById('emptyCard').style.display = 'block';
+                    document.getElementById('generatedCard').style.display = 'none';
+                    showToast(`🗑️ Saare ${count} karyakarta cards delete ho gaye!`);
+                    pendingDeleteAction = null;
+                };
+                document.getElementById('deleteModal').classList.add('active');
+            } else {
+                // Individual delete
+                const members = getMembers();
+                const member = members.find(m => m.id === pendingDeleteAction);
+                if (!member) {
+                    showToast('❌ Yeh member nahi mila!', '#dc3545');
+                    pendingDeleteAction = null;
+                    return;
+                }
+                document.getElementById('deleteModalIcon').textContent = '⚠️';
+                document.getElementById('deleteModalTitle').textContent = `"${member.name}" ka card delete karein?`;
+                document.getElementById('deleteModalMessage').textContent = 
+                    `ID: ${member.id} — Yeh action undo nahi ho sakta. Card hamesha ke liye delete ho jayega.`;
+                document.getElementById('confirmDeleteBtn').onclick = function() {
+                    let members = getMembers();
+                    const deletedMember = members.find(m => m.id === pendingDeleteAction);
+                    members = members.filter(m => m.id !== pendingDeleteAction);
+                    saveMembers(members);
+                    closeDeleteModal();
+                    updateMemberList();
+                    const currentCardId = document.getElementById('cardID').textContent;
+                    if (currentCardId === pendingDeleteAction) {
+                        document.getElementById('emptyCard').style.display = 'block';
+                        document.getElementById('generatedCard').style.display = 'none';
+                    }
+                    showToast(`🗑️ "${deletedMember ? deletedMember.name : 'Karyakarta'}" ka card delete ho gaya!`);
+                    pendingDeleteAction = null;
+                };
+                document.getElementById('deleteModal').classList.add('active');
+            }
+        } else {
+            document.getElementById('passwordError').style.display = 'block';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPassword').focus();
+            setTimeout(() => {
+                document.getElementById('passwordError').style.display = 'none';
+            }, 3000);
+        }
+    }
+
+    // ===== DELETE MODAL =====
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+    }
+
+    // Close delete modal on overlay click
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+
+    // Close password modal on overlay click
+    document.getElementById('passwordModal').addEventListener('click', function(e) {
+        if (e.target === this) closePasswordModal();
+    });
+
+    // ===== UPDATE MEMBER LIST =====
+    function updateMemberList() {
+        const members = getMembers();
+        const grid = document.getElementById('memberGrid');
+        const count = document.getElementById('memberCount');
+        count.textContent = members.length;
+
+        if (members.length === 0) {
+            grid.innerHTML = '<p style="color:#aaa;">Abhi tak koi karyakarta register nahi hua. Aap pehle banein! 🎯</p>';
+            return;
+        }
+
+        grid.innerHTML = members.map(m => `
+            <div class="member-card" onclick='showCardFromList(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
+                <button class="delete-btn" onclick="event.stopPropagation(); showPasswordModal('${m.id}')" title="Card delete karein (admin)">✕</button>
+                <div class="m-photo">
+                    <img src="${m.photo}" alt="${m.name}" />
+                </div>
+                <div class="m-name">${m.name}</div>
+                <div class="m-role">${m.role}</div>
+                <div class="m-id">${m.id}</div>
+                <div class="m-city">${m.city}, ${m.state}</div>
+            </div>
+        `).join('');
+    }
+
+    function showCardFromList(member) {
+        showCard(member);
+    }
+
+    // ===== TOAST =====
+    function showToast(msg, bg = '#138808') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.background = bg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+        updateMemberList();
+        const urlParams = new URLSearchParams(window.location.search);
+        const showId = urlParams.get('show');
+        if (showId) {
+            const members = getMembers();
+            const member = members.find(m => m.id === showId);
+            if (member) showCard(member);
+        }
+    });
+</script>
+
+</body>
+</html>
